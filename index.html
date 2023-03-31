@@ -12,13 +12,14 @@ function send_test() {
       })
 }
 
-Notification.requestPermission(function(result) {
-  console.log("User choice", result);
-  if (result !== "granted") {
-    console.log("No notification permission granted!");
-  }
-});
-
+function register() {
+  Notification.requestPermission(function(result) {
+    console.log("User choice", result);
+    if (result !== "granted") {
+      console.log("No notification permission granted!");
+    }
+  });
+}
 
 if (navigator.serviceWorker) {
   navigator.serviceWorker.register ('./service-worker.js')
@@ -62,5 +63,6 @@ h1 {
 <body>
   <h1>My PWA</h1>
   <button onclick="send_test()">Push</button>
+  <button onclick="register()">Register</button>
 </body>
 </html>

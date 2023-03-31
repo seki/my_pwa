@@ -16,17 +16,23 @@ class PushList
       icon: "/img/chip.png"
     }
 
-    @list.each do |e|
-      Webpush.payload_send(
-        message: JSON.generate(message),
-        endpoint: e["endpoint"],
-        p256dh: e["keys"]["p256dh"],
-        auth: e["keys"]["auth"],
-        vapid: {
-          public_key: ENV['VAPID_PUBLIC_KEY'],
-          private_key: ENV['VAPID_PRIVATE_KEY']
-        },
-      )
+    @list = @list.find_all do |e|
+      begin
+        Webpush.payload_send(
+          message: JSON.generate(message),
+          endpoint: e["endpoint"],
+          p256dh: e["keys"]["p256dh"],
+          auth: e["keys"]["auth"],
+          vapid: {
+            public_key: ENV['VAPID_PUBLIC_KEY'],
+            private_key: ENV['VAPID_PRIVATE_KEY']
+          },
+        )
+        true
+      rescue
+        pp e
+        false
+      end
     end
   end
 end
