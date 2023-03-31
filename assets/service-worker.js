@@ -9,3 +9,12 @@ self.addEventListener('install', function (e) {
 self.addEventListener('activate', function (e) {
   console.log('service worker activate')
 })
+
+self.addEventListener("push", (event) => {
+  event.waitUntil(
+    self.registration.showNotification("Push通知タイトル", {
+      body: "Push通知本文"
+    })
+  )
+  console.log(event)
+});

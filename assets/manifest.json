@@ -3,11 +3,12 @@
   "short_name": "my_pwa",
   "background_color": "#000000",
   "icons": [{
-      "src": "/my_pwa/img/chip.png",
+      "src": "/img/chip.png",
       "sizes": "512x512",
       "type": "image/png"
     }],
-  "start_url": "/my_pwa/",
-  "scope": "/my_pwa/",
-  "display": "standalone"
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "gcm_sender_id": "103953800507"
 }
