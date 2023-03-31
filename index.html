@@ -6,6 +6,12 @@
   <link rel="manifest" href="./manifest.json">
   <script>
 
+function send_test() {
+  fetch("/test", {
+        method: 'GET'
+      })
+}
+
 Notification.requestPermission(function(result) {
   console.log("User choice", result);
   if (result !== "granted") {
@@ -55,5 +61,6 @@ h1 {
 </head>
 <body>
   <h1>My PWA</h1>
+  <button onclick="send_test()">Push</button>
 </body>
 </html>

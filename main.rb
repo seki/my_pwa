@@ -22,16 +22,20 @@ Dir.glob('assets/*') do |path|
   server.mount('/' + File.basename(path), WEBrick::HTTPServlet::FileHandler, path)
 end
 
+server.mount_proc('/test') {|req, res|
+  it = { "hmm" => "will send"}.to_json
+  Thread.new do
+    $list.push("Hello, Again")
+  end
+  res.body = it
+}
+
 server.mount_proc('/push') {|req, res|
   post = JSON.parse(req.body)
   pp post
   $list.register(post)
   res.content_type = "application/json; charset=UTF-8"
   it = { "hmm" => "ok"}.to_json
-  Thread.new do
-    sleep(5)
-    $list.push("Hello, Again")
-  end
   res.body = it
 }
 

@@ -11,9 +11,11 @@ self.addEventListener('activate', function (e) {
 })
 
 self.addEventListener("push", (event) => {
+  var json = event.data.json();
   event.waitUntil(
-    self.registration.showNotification("Push通知タイトル", {
-      body: "Push通知本文"
+    self.registration.showNotification(json.title, {
+      body: json.body,
+      icon: json.icon
     })
   )
   console.log(event)

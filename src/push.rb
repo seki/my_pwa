@@ -10,9 +10,15 @@ class PushList
   end
 
   def push(body)
+    message = {
+      title: "Hello, Again.",
+      body: body,
+      icon: "/img/chip.png"
+    }
+
     @list.each do |e|
       Webpush.payload_send(
-        message: body,
+        message: JSON.generate(message),
         endpoint: e["endpoint"],
         p256dh: e["keys"]["p256dh"],
         auth: e["keys"]["auth"],
