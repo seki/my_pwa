@@ -13,40 +13,45 @@ function send_test() {
 }
 
 function register() {
-  Notification.requestPermission(function(result) {
-    console.log("User choice", result);
-    if (result !== "granted") {
-      console.log("No notification permission granted!");
-    }
-  });
+  if (Notification.permission !== "denied") {
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
+        setupNotification();
+      }
+    });
+  }
 }
 
 if (navigator.serviceWorker) {
   navigator.serviceWorker.register ('./service-worker.js')
 }
 
-window.vapidPublicKey = new Uint8Array(<%= Base64.urlsafe_decode64(ENV['VAPID_PUBLIC_KEY']).bytes %>);
-navigator.serviceWorker.ready.then((serviceWorkerRegistration) => {
-  serviceWorkerRegistration.pushManager
-  .subscribe({
-    userVisibleOnly: true,
-    applicationServerKey: window.vapidPublicKey
+function setupNotification() {
+  window.vapidPublicKey = new Uint8Array(<%= Base64.urlsafe_decode64(ENV['VAPID_PUBLIC_KEY']).bytes %>);
+  navigator.serviceWorker.ready.then((serviceWorkerRegistration) => {
+    serviceWorkerRegistration.pushManager
+    .subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: window.vapidPublicKey
+    });
   });
-});
 
-navigator.serviceWorker.ready
-  .then((serviceWorkerRegistration) => {
-    serviceWorkerRegistration.pushManager.getSubscription()
-    .then((subscription) => {
+  navigator.serviceWorker.ready.then((serviceWorkerRegistration) => {
+    serviceWorkerRegistration.pushManager.getSubscription().then((subscription) => {
       fetch("/push", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(subscription)
-      })
-      // 'Content-Type': 'application/x-www-form-urlencoded',
-    })});
+      });
+    })
+  });
+}
+
+if (Notification.permission === "granted") {
+  setupNotification();
+}
 
   </script>
   <title>My PWA</title>
@@ -64,5 +69,6 @@ h1 {
   <h1>My PWA</h1>
   <button onclick="send_test()">Push</button>
   <button onclick="register()">Register</button>
+  <p id="status"></p>
 </body>
 </html>
