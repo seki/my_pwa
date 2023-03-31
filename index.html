@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="./manifest.json">
+  <script>
+      if (navigator.serviceWorker) {
+        navigator.serviceWorker.register ('./service-worker.js')
+      }
+  </script>
+  <title>My PWA</title>
+  <style>
+body {
+    text-align:center;
+}
+h1 {
+    font-size: 2em;
+    font-weight: normal;
+}
+  </style>
+</head>
+<body>
+  <h1>My PWA</h1>
+</body>
+</html>

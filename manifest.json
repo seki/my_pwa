@@ -1,0 +1,13 @@
+{
+  "name": "My PWA",
+  "short_name": "my_pwa",
+  "background_color": "#000000",
+  "icons": [{
+      "src": "/my_pwa/img/hamana.png",
+      "sizes": "160x160",
+      "type": "image/png"
+    }],
+  "start_url": "/my_pwa/",
+  "scope": "/my_pwa/",
+  "display": "standalone"
+}
