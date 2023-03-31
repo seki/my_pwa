@@ -24,6 +24,7 @@ class PushList
           p256dh: e["keys"]["p256dh"],
           auth: e["keys"]["auth"],
           vapid: {
+            subject: "mailto:m_seki@mac.com",
             public_key: ENV['VAPID_PUBLIC_KEY'],
             private_key: ENV['VAPID_PRIVATE_KEY']
           },
@@ -31,6 +32,7 @@ class PushList
         true
       rescue
         pp e
+        pp $!
         false
       end
     end
