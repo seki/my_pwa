@@ -34,5 +34,7 @@ class PushList
         false
       end
     end
+    pp @list
+    pp [:size, @list.size]
   end
 end
