@@ -1,3 +1,5 @@
+const appVersion = '0.0.1';
+
 self.addEventListener('fetch', function (e) {
   console.log('service worker fetch')
 })
