@@ -35,7 +35,7 @@ server.mount_proc('/push') {|req, res|
   pp post
   $list.register(post)
   res.content_type = "application/json; charset=UTF-8"
-  it = { "hmm" => "ok"}.to_json
+  it = { "registered" => "ok"}.to_json
   res.body = it
 }
 
