@@ -6,6 +6,8 @@ class PushList
   end
 
   def register(subscription)
+    return unless subscription
+    return if @list.include?(subscription)
     @list << subscription
   end
 

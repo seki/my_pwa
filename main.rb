@@ -9,7 +9,7 @@ env_path = __dir__ + "/env.rb"
 puts env_path
 load(env_path) if File.exist?(env_path)
 
-port = Integer(ENV['PORT']) rescue 8000
+port = Integer(ENV['PORT']) rescue 8009
 server = WEBrick::HTTPServer.new({
   :Port => port,
   :FancyIndexing => false
