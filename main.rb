@@ -39,6 +39,13 @@ server.mount_proc('/push') {|req, res|
   res.body = it
 }
 
+server.mount_proc('/put') {|req, res|
+  pp req.path_info
+  res.content_type = "application/json; charset=UTF-8"
+  it = { "put" => req.path_info}.to_json
+  res.body = it
+}
+
 server.mount_proc('/') {|req, res|
   res.content_type = "text/html; charset=UTF-8"
   res.body = $index.result(binding)
