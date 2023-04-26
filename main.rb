@@ -4,10 +4,12 @@ require 'webpush'
 require 'open-uri'
 require 'net/http'
 require_relative 'src/push'
+require_relative 'src/my_s3'
 
 env_path = __dir__ + "/env.rb"
 puts env_path
 load(env_path) if File.exist?(env_path)
+$s3 = MyS3.new
 
 port = Integer(ENV['PORT']) rescue 8009
 server = WEBrick::HTTPServer.new({
@@ -41,6 +43,9 @@ server.mount_proc('/push') {|req, res|
 
 server.mount_proc('/put') {|req, res|
   pp req.path_info
+  key = req.path_info.dup
+  key[0] = '' if key[0] == '/' 
+  puts $s3.get_object(key).body.read
   res.content_type = "application/json; charset=UTF-8"
   it = { "put" => req.path_info}.to_json
   res.body = it
