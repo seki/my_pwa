@@ -26,9 +26,7 @@ end
 
 server.mount_proc('/test') {|req, res|
   it = { "hmm" => "will send"}.to_json
-  Thread.new do
-    $list.push("Hello, Again")
-  end
+  $list.queue.push({'body' => 'Hello, Again'})
   res.body = it
 }
 
@@ -46,7 +44,12 @@ server.mount_proc('/put') {|req, res|
   key = req.path_info.dup
   key[0] = '' if key[0] == '/' 
   pp [:key, key]
-  puts $s3.get_object(key).body.read
+  begin
+    data = JSON.parse($s3.get_object(key).body.read)
+    $list.queue.push(data)
+  rescue
+    pp $!
+  end
   res.content_type = "application/json; charset=UTF-8"
   it = { "put" => key}.to_json
   res.body = it
