@@ -1,14 +1,17 @@
 require 'webpush'
+require_relative 'store'
 
 class PushList
   def initialize()
-    @list = []
+    @store = Not::MyStore
   end
 
   def register(subscription)
-    return unless subscription
-    return if @list.include?(subscription)
-    @list << subscription
+    begin
+      @store.subscription_register(subscription)
+    rescue
+      pp $!
+    end
   end
 
   def push(body)
@@ -18,27 +21,27 @@ class PushList
       icon: "/img/chip.png"
     }
 
-    @list = @list.find_all do |e|
+    failed = Not::MyStore.subscription_list.find_all do |e|
       begin
         Webpush.payload_send(
           message: JSON.generate(message),
           endpoint: e["endpoint"],
-          p256dh: e["keys"]["p256dh"],
-          auth: e["keys"]["auth"],
+          p256dh: e["p256dh"],
+          auth: e["auth"],
           vapid: {
             subject: "mailto:m_seki@mac.com",
             public_key: ENV['VAPID_PUBLIC_KEY'],
             private_key: ENV['VAPID_PRIVATE_KEY']
           },
         )
-        true
+        false
       rescue
         pp e
         pp $!
-        false
+        true
       end
     end
-    pp @list
-    pp [:size, @list.size]
+    pp failed
+    pp [:size, failed.size]
   end
 end
