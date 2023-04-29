@@ -48,7 +48,7 @@ server.mount_proc('/put') {|req, res|
   pp [:key, key]
   puts $s3.get_object(key).body.read
   res.content_type = "application/json; charset=UTF-8"
-  it = { "put" => req.path_info}.to_json
+  it = { "put" => key}.to_json
   res.body = it
 }
 
