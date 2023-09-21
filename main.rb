@@ -62,26 +62,10 @@ server.mount_proc('/yosoku_stream') {|req, res|
   $yosoku.on_stream(req, res)
 }
 
-Thread.new do 
-  while true
-    sleep 10
-    $yosoku.on_news({"topic"=>"yosoku",
-      "urgency"=>"normal",
-      "title"=>"Dropbox作業開始です",
-      "body"=>"Dropbox作業開始です"})
-
-    $yosoku.on_news({"topic"=>"yosoku",
-      "urgency"=>"normal",
-      "title"=>"Dropbox作業終了です",
-      "body"=>"Dropbox作業終了です"})
-  end
-end
-
 server.mount_proc('/') {|req, res|
   res.content_type = "text/html; charset=UTF-8"
   res.body = $index.result(binding)
 }
-
 
 trap(:INT){exit!}
 server.start
