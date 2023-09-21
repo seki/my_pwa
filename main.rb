@@ -4,6 +4,7 @@ require 'webpush'
 require 'open-uri'
 require 'net/http'
 require_relative 'src/push'
+require_relative 'src/yosoku_stream'
 require_relative 'src/my_s3'
 
 env_path = __dir__ + "/env.rb"
@@ -19,6 +20,7 @@ server = WEBrick::HTTPServer.new({
 
 $index = ERB.new(File.read('index.html'))
 $list = PushList.new
+$yosoku = YosokuStream.new
 
 Dir.glob('assets/*') do |path|
   server.mount('/' + File.basename(path), WEBrick::HTTPServlet::FileHandler, path)
@@ -47,6 +49,7 @@ server.mount_proc('/put') {|req, res|
   begin
     data = JSON.parse($s3.get_object(key).body.read)
     $list.queue.push(data)
+    $yosoku.on_news(data)
   rescue
     pp $!
   end
@@ -55,10 +58,30 @@ server.mount_proc('/put') {|req, res|
   res.body = it
 }
 
+server.mount_proc('/yosoku_stream') {|req, res|
+  $yosoku.on_stream(req, res)
+}
+
+Thread.new do 
+  while true
+    sleep 10
+    $yosoku.on_news({"topic"=>"yosoku",
+      "urgency"=>"normal",
+      "title"=>"Dropbox作業開始です",
+      "body"=>"Dropbox作業開始です"})
+
+    $yosoku.on_news({"topic"=>"yosoku",
+      "urgency"=>"normal",
+      "title"=>"Dropbox作業終了です",
+      "body"=>"Dropbox作業終了です"})
+  end
+end
+
 server.mount_proc('/') {|req, res|
   res.content_type = "text/html; charset=UTF-8"
   res.body = $index.result(binding)
 }
+
 
 trap(:INT){exit!}
 server.start
