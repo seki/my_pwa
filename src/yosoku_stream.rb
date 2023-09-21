@@ -1,4 +1,5 @@
 require 'driq'
+require 'time'
 require 'driq/webrick'
 
 class YosokuStream
@@ -17,7 +18,7 @@ class YosokuStream
 
   def on_news(data)
     return unless data['topic'] == 'yosoku'
-    pp data
+    data['time'] = Time.now.iso8601
     @src.write(data.to_json)
   end
 end
