@@ -19,6 +19,6 @@ class YosokuStream
   def on_news(data)
     return unless data['topic'] == 'yosoku'
     data['time'] = Time.now.iso8601
-    @src.write(data.to_json)
+    @src.write(data)
   end
 end
